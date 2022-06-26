@@ -1,0 +1,43 @@
+apiVersion: apps/v1      
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: app
+  name:  app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: app
+    spec:
+      containers:
+      - image: scinet0786/background_api:1.1
+        name: app
+        ports:
+        - containerPort: 3000
+        resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loanapp-service
+  labels:
+    app: app
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3001
+      targetPort: 3000
+      protocol: TCP
+      name: loanapp-service
+  selector:
+    app : app

@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{.Values.name}}
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          {{- $deployment := .Values.deployment | default dict}}
+          {{- $registry := $deployment.registry | default "docker.io"}}
+          {{- $image := .Values.image | default "scinet0786/background_api"}}
+          {{- $tag := .Values.tag | default "1.2"}}
+          - name: {{.Values.name}}
+            image:  {{printf "%s/%s:%s" $registry $image $tag}}
+            imagePullPolicy: IfNotPresent
+          

@@ -1,0 +1,27 @@
+apiVersion: apps/v1      
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: Background_api
+  name:  Background_api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: Background_api
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: Background_api
+    spec:
+      containers:
+      - image: scinet0786/background_api:1.2
+        name: Background_api
+        ports:
+        - containerPort: 7000
+        resources: {}
+status: {}
+

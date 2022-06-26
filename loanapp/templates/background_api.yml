@@ -1,0 +1,72 @@
+apiVersion: apps/v1      
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{.Values.name}}
+  name: {{.Values.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  strategy: 
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+      {{- $deployment := .Values.deployment | default dict}}
+      {{- $registry := $deployment.registry | default "docker.io"}}
+      {{- $image := .Values.image | default "scinet0786/background_api"}}
+      {{- $tag := .Values.tag | default "1.2"}}
+      - image: {{printf "%s/%s:%s" $registry $image $tag}}
+        name: {{.Values.name}}
+        '''
+        volumeMount:
+        - name: app_storage
+          mountPath: ./data/app
+        - name: api_storage
+          mountPath: /data/api
+
+        '''
+        ports:
+        - containerPort: 3000
+        env:
+          - name: APP_COLOR
+            valueFrom:
+              ConfigMapkeyRef:
+                name: {{.Values.name}}-configMap
+                key: APP_COLOR
+
+          '''- name: API_KEY
+            valueFrom:
+              SecretKeyRef:
+                name: {{.Values.name}}-secret
+                key: API_KEY '''
+
+
+               
+        resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.name}}-service
+  labels:
+    app: loanapp
+spec:
+  selector:
+    app : loanapp
+  type: LoadBalancer
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: {{.Values.name}} -service
+  

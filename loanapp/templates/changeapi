@@ -1,0 +1,24 @@
+node{
+    def app
+    stage('Clone repository'){
+        checkout scm
+
+
+    } 
+    stage('updateApi'){
+        script{
+            catchError(buildResult:"SUCCESS", stageResult:"FAILURE") {
+                withCredentials([usernamePassword(credentialsId:'GIT',passwordvariable : 'PWD' ,usernameVariable: 'USERNAME')]){
+                  sh  'git config user.email osiephriobukohwo@gmail.com'
+                  sh  'git config user.name Osiephri'
+                  sh  'cat k8s_manifest.yaml'
+                  sh  "sed -i 's+scinet0786/background_api.*+scinet0786/background_api:${manifest}+g' api.yaml"
+                  sh  "cat deployment.yaml"
+                  sh  "git add ."
+                  sh  "git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'"
+                  sh  "git push https://${USERNAME}:${PWD}@github.com/${USERNAME}}/loanapp.git HEAD:main" 
+                }
+            }            
+    }
+    }
+}

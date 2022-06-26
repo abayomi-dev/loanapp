@@ -1,0 +1,27 @@
+pipeline{
+    agent any
+    stages{
+        stage('clone TF repo'){
+            steps{
+                checkout([$class: 'GitSCM', branches : [[name:'*/main']] ,extensions : [] , userRemoteConfigs:[[url:"https://github.com/aws-ia/terrafrom-aws-eks-blueprints.git"]] ])
+
+            }
+        }
+
+        stage('provision_terraform'){
+            steps{
+                sh """ 
+                  cd examples/eks-cluster-with-new-vpc/
+                  terraform init
+                  export AWS_REGION = us-east-1
+                  terraform plan
+                  terrafrom apply --auto-approve   
+                  
+                              
+                """
+            }
+        }
+
+
+    }
+}

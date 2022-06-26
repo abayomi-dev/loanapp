@@ -1,0 +1,4 @@
+deployment:
+  image: "scinet0786/background_api"
+  tag: "1.1"
+name: loanapp 
