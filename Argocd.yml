@@ -8,7 +8,7 @@ spec:
   source: 
     repoURL: https://github.com/Osiephri/loanapp.git
     targetRevision: HEAD
-    path: /loanapp
+    path: /loanapp/templates
   destination: 
     server: https://kubernetes.default.svc
     namespace: myapp
